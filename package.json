@@ -10,5 +10,9 @@
   },
   "devDependencies": {
     "vite": "^7.0.4"
+  },
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3",
+    "sweetalert2": "^11.22.2"
   }
 }
