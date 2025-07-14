@@ -1,0 +1,18 @@
+{
+    "users": [
+        {
+            "id": "a31f",
+            "name": "Camilo",
+            "email": "camilo@gmail.com",
+            "password": "Camilo123+",
+            "role": "admin"
+        }
+    ],
+    "events": [
+        {
+            "id": "e1",
+            "title": "Evento de prueba",
+            "location": "Sala de conferencias"
+        }
+    ]
+}

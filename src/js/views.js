@@ -1,3 +1,11 @@
+import { authentication } from "./auth.js"
+import { alertError } from "./alert.js"
+import { router } from "./router.js"
+import { api } from "./api.js"
+
+// Render the landing page view
+
+
 export function renderLanding() {
     const app = document.getElementById("app")
     app.innerHTML = `
@@ -5,11 +13,19 @@ export function renderLanding() {
         <div class="landing-container">
             <h1>Welcome to Our Platform</h1>
             <p>Explore our courses and enhance your skills.</p>
-            <a href="#/login" class="btn">Login</a>
-            <a href="#/register" class="btn">Register</a>
+            <button id="go-to-login">Iniciar sesión</button>
+            <button id="go-to-register">Registrarse</button>
         </div>
     </section>`
+
+    document.getElementById("go-to-login").addEventListener("click", () => {
+        location.hash = "#/login";
+    })
+    document.getElementById("go-to-register").addEventListener("click", () => {
+        location.hash = "#/register";
+    })
 }
+    
 
 
 export function renderLogin() {
@@ -42,7 +58,6 @@ export function renderLogin() {
         }
     }
 }
-
 
 export function renderRegister() {
     const app = document.getElementById("app")

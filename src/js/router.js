@@ -1,3 +1,7 @@
+import { renderLanding, renderLogin, renderRegister, renderDashboard } from './views.js';
+import { authentication } from './auth.js';
+import { showEditevent } from './showEditevent.js';
+// Router module to handle navigation and rendering of views based on URL hash
 const routes = {
     '#/': renderLanding,
     '#/login': renderLogin,
@@ -8,20 +12,20 @@ const routes = {
 export function router() {
     const path = Location.hash || '#/'
     console.log("Ruta actual: ", path)
-    const user = Authentication.getUserLocal()
+    const user = authentication.getUserLocal()
 
     if (path.startsWith('#/dashboard') && !authentication.isAuthenticated()) {
-        location.hash = '#/login'
-        return
+        location.hash = '#/login';
+        return;
     }
 
-    if (path.startsWith('#/login') && !authentication.isAuthenticated()) {
+    if ((path === '#/login' || path === '#/register') && authentication.isAuthenticated()) {
         location.hash = '#/dashboard'
-        return
+        return;
     }
 
     if (path.startsWith('#/dashboard/courses/edit/')) {
-        showEditCourse()
+        showEditevent()
         return
     }
 
