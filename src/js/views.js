@@ -10,18 +10,47 @@ export function renderLanding() {
     const app = document.getElementById("app")
     app.innerHTML = `
     <section id="landing" class="hidden">
-        <div class="landing-container">
-            <h1>Welcome to Our Platform</h1>
-            <p>Explore our courses and enhance your skills.</p>
-            <button id="go-to-login">Iniciar sesión</button>
-            <button id="go-to-register">Registrarse</button>
-        </div>
+        <header class="landing-header">
+            <h1> Events center</h1>
+            <nav>
+                <button id="go-to-login">Iniciar sesión</button>
+                <button id="go-to-register">Registrarse</button>
+            </nav>
+        </header>
+        <main class="landing-main">
+            <section class="landing-text">
+                <h2>¡Tu carro merece el mejor cuidado!</h2>
+                <p>En <strong>Event  center</strong> nos encargamos de que tus eventos como si fueron los nuestros ofrecemos la mejor atención y servicio
+                de la region. </p>
+                <div class="landing-cta">
+                <button id="cta-login">Ya tengo cuenta</button>
+                <button id="cta-register">Quiero registrarme</button>
+                </div>
+            </section>
+    
+            <div class="landing-image">
+                <img src="https://cdn.pixabay.com/photo/2016/11/29/04/17/auto-1868726_1280.jpg" alt="" />
+            </div>
+            </main>
+
+        <footer class="landing-footer">
+            <p>&copy; 2025 AutoCare Center. Todos los derechos reservados.</p>
+        </footer>
     </section>`
 
     document.getElementById("go-to-login").addEventListener("click", () => {
-        location.hash = "#/login";
+        location.hash = "#/login"
+        router()
     })
     document.getElementById("go-to-register").addEventListener("click", () => {
+        location.hash = "#/register";
+    })
+
+    document.getElementById("cta-login").addEventListener("click", () => {
+        location.hash = "#/login";
+    })
+
+    document.getElementById("cta-register").addEventListener("click", () => {
         location.hash = "#/register";
     })
 }
@@ -47,10 +76,14 @@ export function renderLogin() {
 
     // Handle login form submission
     document.getElementById("login-form").onsubmit = async event => {
-        event.preventDefault();
+        event.preventDefault()
         try {
             const aux = event.target
-            await authentication.loginUser(aux["loginUsername"].value, aux["password"].value);
+            await authentication.loginUser(
+                aux.loginUsername.value,
+                aux.password.value
+            )
+
             location.hash = "#/dashboard"
             router()
         } catch (error) {
@@ -91,10 +124,12 @@ export function renderRegister() {
         try {
             const aux = event.target
             await authentication.registerUser(
-                aux["registername"].value, 
-                aux["registeremail"].value, 
-                aux["registerpassword"].value);
-            location.hash = "#/login"
+                aux.registername.value, 
+                aux.registeremail.value, 
+                aux.registerpassword.value
+            )
+
+            location.hash = "#/dashboard"
             router()
         } catch (error) {
             alertError("Error, Credenciales invalidas")
