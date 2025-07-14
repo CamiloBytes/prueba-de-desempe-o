@@ -1,12 +1,14 @@
-import { renderLanding, renderLogin, renderRegister, renderDashboard } from './views.js';
+import { renderLanding, renderLogin, renderRegister } from './views.js';
 import { authentication } from './auth.js';
 import { showEditevent } from './showEditevent.js';
+import { renderDashboard } from './renderDashboard.js';
 // Router module to handle navigation and rendering of views based on URL hash
 const routes = {
     '#/': renderLanding,
     '#/login': renderLogin,
     '#/register': renderRegister,
-    '#/dashboard': renderDashboard
+    '#/dashboard': renderDashboard,
+    '#/dashboard/events/edit': showEditevent,
 }
 
 export function router() {

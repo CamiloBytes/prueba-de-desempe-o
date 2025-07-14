@@ -15,11 +15,5 @@
       "role": "visitor"
     }
   ],
-  "events": [
-    {
-      "id": "e1",
-      "title": "Evento de prueba",
-      "location": "Sala de conferencias"
-    }
-  ]
+  "events": []
 }
