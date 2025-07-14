@@ -1,5 +1,6 @@
 import { api } from './api.js'
 import { authentication } from './auth.js'
+import { addEvent } from './addevent.js'
 
 export async function renderDashboard() {
     const app = document.getElementById("app")
@@ -7,53 +8,41 @@ export async function renderDashboard() {
     const events = await api.get("/events")
 
     app.innerHTML = `
-    <section id="dashboard">
-        <aside class="sidebar">
-            <div class="profile">
-                
-                <h3>${user.name}</h3>
-                <p>${user.role}</p>
-            </div>
-            <nav>
-                <button id="events-btn">Events</button>
-                <button id="logout-btn">Logout</button>
-            </nav>
-        </aside>
-        <main class="dashboard-main">
-            <header class="dashboard-header">
-                <h2>Events</h2>
-                ${user.role === "admin" ? `<button id="add-event-btn">Add New Event</button>` : ""}
-            </header>
-            <table class="events-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Capacity</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${events.map(event => `
-                    <tr>
-                        <td>${event.name || 'Sin título'}</td>
-                        <td>${event.description || 'Sin descripción'}</td>
-                        <td>${event.capacity || 0}</td>
-                        <td>${event.date || 'Sin fecha'}</td>
-                        <td>
-                            ${user.role === "admin" ? `
-                                <button class="edit-btn" data-id="${event.id}">✏️</button>
-                                <button class="delete-btn" data-id="${event.id}">🗑️</button>
-                            ` : `
-                                <button class="enroll-btn" data-id="${event.id}">Inscribirse</button>
-                                <button class="leave-btn" data-id="${event.id}">Salir</button>
-                            `}
-                        </td>
-                    </tr>`).join('')}
-                </tbody>
-            </table>
-        </main>
+    <section class="dashboard">
+        <header class="dashboard-header">
+            <h2>Eventos</h2>
+            ${user.role === "admin" ? `<button id="add-event-btn" class="btn-success">Agregar Evento</button>` : ""}
+            <button id="logout-btn" class="btn-danger">Cerrar Sesión</button>
+        </header>
+        <table class="events-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Capacidad</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${events.map(event => `
+                <tr>
+                    <td>${event.name || 'Sin título'}</td>
+                    <td>${event.description || 'Sin descripción'}</td>
+                    <td>${event.capacity || 0}</td>
+                    <td>${event.date || 'Sin fecha'}</td>
+                    <td>
+                        ${user.role === "admin" ? `
+                            <button class="edit-btn btn-warning" data-id="${event.id}">✏️</button>
+                            <button class="delete-btn btn-danger" data-id="${event.id}">🗑️</button>
+                        ` : `
+                            <button class="enroll-btn btn-success" data-id="${event.id}">Inscribirse</button>
+                            <button class="leave-btn btn-warning" data-id="${event.id}">Salir</button>
+                        `}
+                    </td>
+                </tr>`).join('')}
+            </tbody>
+        </table>
     </section>`
 
     // Event listeners for admin actions
@@ -69,7 +58,7 @@ export async function renderDashboard() {
             button.addEventListener("click", async () => {
                 const eventId = button.dataset.id
                 try {
-                    await api.delete(`/events/${eventId}`)
+                    await api.delete(`/events?=${eventId}`)
                     console.log("Event deleted successfully!")
                     renderDashboard() // Refresh the dashboard
                 } catch (error) {
@@ -80,6 +69,7 @@ export async function renderDashboard() {
 
         document.getElementById("add-event-btn").addEventListener("click", () => {
             location.hash = "#/dashboard/events/create"
+            addEvent()
         })
     }
 
@@ -89,10 +79,10 @@ export async function renderDashboard() {
             button.addEventListener("click", async () => {
                 const eventId = button.dataset.id
                 try {
-                    const event = await api.get(`/events/${eventId}`)
-                    if (event.capacity > 0) {
+                    const event = await api.get(`/events?=${eventId}`)
+                    if (event.capacity > 0 && event.capacity !== undefined) {
                         event.capacity -= 1
-                        await api.put(`/events/${eventId}`, event)
+                        await api.put(`/events?=${eventId}`, event)
                         console.log("Inscripción exitosa!")
                         renderDashboard() // Refresh the dashboard
                     } else {
@@ -107,10 +97,24 @@ export async function renderDashboard() {
         document.querySelectorAll(".leave-btn").forEach(button => {
             button.addEventListener("click", async () => {
                 const eventId = button.dataset.id
+                const capacity = parseInt(button.closest('tr').querySelector('td:nth-child(3)').textContent, 10) || 0
                 try {
-                    const event = await api.get(`/events/${eventId}`)
+                    if (capacity <= 0) {
+                        alert("No puedes salir de un evento sin inscribirte primero")
+                        return
+                    }
+                    if (!eventId) {
+                        console.error("Event ID is not defined")
+                        return
+                    }
+
+                    if (isNaN(capacity)) {
+                        console.error("Invalid capacity value:", capacity)
+                        return
+                    }
+                    const event = await api.get(`/events?=${eventId}`)
                     event.capacity += 1
-                    await api.put(`/events/${eventId}`, event)
+                    await api.put(`/events?=${eventId}`, event)
                     console.log("Saliste del evento exitosamente!")
                     renderDashboard() // Refresh the dashboard
                 } catch (error) {
@@ -126,9 +130,4 @@ export async function renderDashboard() {
         location.hash = "#/login"
     })
 
-    // Handle navigation to create event view
-    if (path === "#/dashboard/events/create") {
-        renderCreateEvent()
-        return
-    }
 }

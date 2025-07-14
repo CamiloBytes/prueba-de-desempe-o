@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Admin",
       "email": "admin@example.com",
       "password": "admin123",
@@ -15,5 +15,20 @@
       "role": "visitor"
     }
   ],
-  "events": []
+  "events": [
+    {
+      "id": "4b3c",
+      "name": "baile",
+      "description": "el baile de la hija de trum",
+      "capacity": 16,
+      "date": "2025-07-17"
+    },
+    {
+      "id": "c05f",
+      "name": "cena de politicos",
+      "description": "cena de los 100 años de coca cola",
+      "capacity": "100",
+      "date": "2025-07-23"
+    }
+  ]
 }

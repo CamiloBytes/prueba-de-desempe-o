@@ -1,41 +1,36 @@
 import { authentication } from "./auth.js"
 import { alertError } from "./alert.js"
 import { router } from "./router.js"
-import { api } from "./api.js"
+
 
 // Render the landing page view
 
 
 export function renderLanding() {
     const app = document.getElementById("app")
-    app.innerHTML = `
-    <section id="landing" class="hidden">
-        <header class="landing-header">
-            <h1> Events center</h1>
-            <nav>
-                <button id="go-to-login">Iniciar sesión</button>
-                <button id="go-to-register">Registrarse</button>
-            </nav>
+    app.innerHTML = `<section class="landing">
+        <header>
+            <h1>Bienvenido a Event Center</h1>
+            <p>Organiza y participa en los mejores eventos.</p>
         </header>
-        <main class="landing-main">
-            <section class="landing-text">
-                <h2>¡Tu carro merece el mejor cuidado!</h2>
-                <p>En <strong>Event  center</strong> nos encargamos de que tus eventos como si fueron los nuestros ofrecemos la mejor atención y servicio
-                de la region. </p>
-                <div class="landing-cta">
-                <button id="cta-login">Ya tengo cuenta</button>
-                <button id="cta-register">Quiero registrarme</button>
-                </div>
-            </section>
-    
-            <div class="landing-image">
-                <img src="https://cdn.pixabay.com/photo/2016/11/29/04/17/auto-1868726_1280.jpg" alt="" />
+        <div class="hero-features">
+            <div class="feature-card">
+                <h3>Eventos únicos</h3>
+                <p>Descubre eventos exclusivos en tu área.</p>
             </div>
-            </main>
-
-        <footer class="landing-footer">
-            <p>&copy; 2025 AutoCare Center. Todos los derechos reservados.</p>
-        </footer>
+            <div class="feature-card">
+                <h3>Fácil registro</h3>
+                <p>Inscríbete en eventos con solo unos clics.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Gestión eficiente</h3>
+                <p>Administra tus eventos de manera profesional.</p>
+            </div>
+        </div>
+        <nav>
+            <button id="go-to-login">Iniciar sesión</button>
+            <button id="go-to-register">Registrarse</button>
+        </nav>
     </section>`
     document.getElementById("go-to-login").addEventListener("click", () => {
         location.hash = "#/login"
@@ -62,14 +57,20 @@ export function renderLanding() {
 export function renderLogin() {
     const app = document.getElementById("app");
     app.innerHTML = `
-        <section id="login">
-            <h2>Iniciar sesión</h2>
-            <form id="login-form">
+        <div class="auth-container">
+        <h2>Iniciar sesión</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Correo electrónico</label>
                 <input type="email" id="login-email" placeholder="Correo electrónico" required />
+            </div>
+            <div class="form-group">
+                <label for="login-password">Contraseña</label>
                 <input type="password" id="login-password" placeholder="Contraseña" required />
-                <button type="submit">Iniciar sesión</button>
-            </form>
-        </section>`;
+            </div>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </div>`;
 
     document.getElementById("login-form").onsubmit = async event => {
         event.preventDefault();

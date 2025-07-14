@@ -2,6 +2,7 @@ import { renderLanding, renderLogin, renderRegister } from './views.js';
 import { authentication } from './auth.js';
 import { showEditevent } from './showEditevent.js';
 import { renderDashboard } from './renderDashboard.js';
+
 // Router module to handle navigation and rendering of views based on URL hash
 const routes = {
     '#/': renderLanding,
