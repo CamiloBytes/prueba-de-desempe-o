@@ -10,7 +10,7 @@ const routes = {
 }
 
 export function router() {
-    const path = Location.hash || '#/'
+    const path = location.hash || '#/';
     console.log("Ruta actual: ", path)
     const user = authentication.getUserLocal()
 
@@ -24,7 +24,7 @@ export function router() {
         return;
     }
 
-    if (path.startsWith('#/dashboard/courses/edit/')) {
+    if (path.startsWith('#/dashboard/events/edit/')) {
         showEditevent()
         return
     }

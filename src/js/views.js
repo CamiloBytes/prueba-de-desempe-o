@@ -37,13 +37,15 @@ export function renderLanding() {
             <p>&copy; 2025 AutoCare Center. Todos los derechos reservados.</p>
         </footer>
     </section>`
-
     document.getElementById("go-to-login").addEventListener("click", () => {
         location.hash = "#/login"
-        router()
+        console.log("Login successful")
+        router();   
     })
     document.getElementById("go-to-register").addEventListener("click", () => {
-        location.hash = "#/register";
+        location.hash = "#/register"
+        console.log("Register successful")
+        router();
     })
 
     document.getElementById("cta-login").addEventListener("click", () => {
@@ -58,84 +60,88 @@ export function renderLanding() {
 
 
 export function renderLogin() {
-    const app = document.getElementById("app")
+    const app = document.getElementById("app");
     app.innerHTML = `
-    <!-- view Login -->
-    <section id="login" class="hidden">
-        <div class="login-container">
-            <h2>Login</h2>
-
+        <section id="login">
+            <h2>Iniciar sesión</h2>
             <form id="login-form">
-                <input type="email" id="Email" placeholder="Email" autocomplete="username" required />
-                <input type="password" id="password" placeholder="Password" autocomplete="current-password"
-                    required />
-                <button type="submit">Log in </button>
+                <input type="email" id="login-email" placeholder="Correo electrónico" required />
+                <input type="password" id="login-password" placeholder="Contraseña" required />
+                <button type="submit">Iniciar sesión</button>
             </form>
-        </div>
-    </section>`
+        </section>`;
 
-    // Handle login form submission
     document.getElementById("login-form").onsubmit = async event => {
-        event.preventDefault()
-        try {
-            const aux = event.target
-            await authentication.loginUser(
-                aux.loginUsername.value,
-                aux.password.value
-            )
+        event.preventDefault();
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
 
-            location.hash = "#/dashboard"
-            router()
+        try {
+            const user = await authentication.loginUser(email, password);
+            console.log("Inicio de sesión exitoso:", user);
+            location.hash = "#/dashboard"; // Redirige al dashboard
         } catch (error) {
-            alertError("Error, Credenciales invalidas")
+            alert("Error: Credenciales inválidas");
         }
-    }
+    };
 }
 
 export function renderRegister() {
-    const app = document.getElementById("app")
-    app.innerHTML =
-        `
+    const app = document.getElementById("app");
+    app.innerHTML = `
         <section id="register" class="hidden">
             <div class="register-container">
                 <h2>Crear cuenta</h2>
-            <form id="register-form">
-                
-                label for="registername">Full Name</label>
-                <input type="text" id="registername" placeholder="Nombre completo" required />
-                
-                <label for="registeremail">Email</label>
-                <input type="email" id="registeremail" placeholder="Correo electrónico" required />
-                
-                <label for="registerpassword">Password</label>
-                <input type="password" id="registerpassword" placeholder="Contraseña" required />
-                
-                label for="registerconfirm">Confirm Password</label>
-                <input type="password" id="registerconfirm" placeholder="Confirmar contraseña" required
-                
-                <button type="submit">Registrarse</button>
-            </form>
+                <form id="register-form">
+                    <label for="registername">Full Name</label>
+                    <input type="text" id="registername" placeholder="Nombre completo" required />
+                    
+                    <label for="registeremail">Email</label>
+                    <input type="email" id="registeremail" placeholder="Correo electrónico" required />
+                    
+                    <label for="registerpassword">Password</label>
+                    <input type="password" id="registerpassword" placeholder="Contraseña" required />
+                    
+                    <label for="registerconfirm">Confirm Password</label>
+                    <input type="password" id="registerconfirm" placeholder="Confirmar contraseña" required />
+                    
+                    <button type="submit">Registrarse</button>
+                </form>
             </div>
-        </section>`
+        </section>`;
 
     // Handle register form submission
     document.getElementById("register-form").onsubmit = async event => {
         event.preventDefault();
+        const aux = event.target;
         try {
-            const aux = event.target
+            
+            const password = aux.registerpassword.value;
+            const confirmPassword = aux.registerconfirm.value;
+
+            // Validate password and confirm password match
+            if (!password || !confirmPassword) {
+                alertError("Por favor, complete todos los campos");
+                return;
+            }
+            if (password !== confirmPassword) {
+                alertError("Las contraseñas no coinciden");
+                return;
+            }
+
+            // Call the authentication service to register the user
             await authentication.registerUser(
                 aux.registername.value, 
                 aux.registeremail.value, 
-                aux.registerpassword.value
-            )
+                password
+            );
 
-            location.hash = "#/dashboard"
-            router()
+            location.hash = "#/dashboard";
+            router();
         } catch (error) {
-            alertError("Error, Credenciales invalidas")
+            alertError("Error, Credenciales invalidas");
         }
-    }
-    
+    };
 }
 
 export function renderDashboard() {

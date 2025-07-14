@@ -1,38 +1,53 @@
 // editCourse.js
+import { api } from './api.js';
 
 // Function to fetch course data
-async function fetchCourseData(courseId) {
+async function fetchCourseData(eventId) {
     try {
         const response = await
-        api.get(`/courses/${courseId}`);
+        api.get(`/events/${eventId}`);
         return response;
     } catch (error) {
         console.error('Error fetching course data:', error);
         throw error;
     }
 }
-// Function to render the edit course view
-export async function showEditevent(courseId) {    
+
+// Function to render the edit event view
+export async function showEditevent(eventId) {    
     const app = document.getElementById("app");
     try {
-        const course = await fetchCourseData(courseId);
+        const event = await fetchCourseData(eventId); // Cambia 'course' por 'event' para mayor claridad
         app.innerHTML = `
-        <section id="edit-course">
-            <h2>Edit Course: ${course.name}</h2>
-            <form id="edit-course-form">
-                <input type="text" id="course-name" value="${course.name}" required />
-                <textarea id="course-description">${course.description}</textarea>
+        <section id="edit-event">
+            <h2>Edit Event: ${event.name}</h2>
+            <form id="edit-event-form">
+                <input type="text" id="event-name" value="${event.name}" required />
+                <textarea id="event-description">${event.description}</textarea>
+                <input type="number" id="event-capacity" value="${event.capacity}" required />
+                <input type="date" id="event-date" value="${event.date}" required />
                 <button type="submit">Save Changes</button>
             </form>
         </section>`;
 
         // Handle form submission
-        document.getElementById("edit-course-form").onsubmit = async event => {
+        document.getElementById("edit-event-form").onsubmit = async event => {
             event.preventDefault();
-            // Logic to update the course
-            console.log("Course updated successfully!");
+            const updatedEvent = {
+                name: document.getElementById("event-name").value,
+                description: document.getElementById("event-description").value,
+                capacity: document.getElementById("event-capacity").value,
+                date: document.getElementById("event-date").value
+            };
+            try {
+                await api.put(`/events/${eventId}`, updatedEvent); // Actualiza el evento en la API
+                console.log("Event updated successfully!");
+                location.hash = "#/dashboard"; // Redirige al dashboard
+            } catch (error) {
+                console.error("Error updating event:", error);
+            }
         };
     } catch (error) {
-        console.error('Error rendering edit course view:', error);
+        console.error('Error rendering edit event view:', error);
     }
 }

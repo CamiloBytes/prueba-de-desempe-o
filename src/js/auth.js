@@ -1,50 +1,37 @@
-
 import { api } from './api.js';
 // Authentication module to handle user login, registration, and session management
 
 export const authentication = {
-    loginUser: async (email, password) => {
-        // Find user by email and validate password
-        const users = await api.get(`/users?email=${email}`);
-        if (users.length === 0 || users[0].password !== password) {
-            throw new Error("Credenciales inválidas");
+    async loginUser(email, password) {
+        try {
+            const response = await api.get(`/users?email=${email}&password=${password}`);
+            if (response.length === 0) {
+                throw new Error("Credenciales inválidas");
+            }
+            const user = response[0];
+            localStorage.setItem("user", JSON.stringify(user)); // Guarda la sesión
+            return user;
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+            throw error;
         }
-
-        // Store user in localStorage for session persistence
-        const user = users[0];
-        localStorage.setItem("user", JSON.stringify(user));
     },
-
-    registerUser: async (username, email, phone, password) => {
-        // Check if email already exists
-        const valideUser = await api.get(`/users?email=${email}`);
-        if (valideUser.length > 0) {
-            throw new Error("El email ya existe");
+    async registerUser(name, email, password) {
+        try {
+            const user = { name, email, password, role: "visitor" }; // Ajusta el rol según sea necesario
+            return await api.post("/users", user); // Asegúrate de que "/users" exista en db.json
+        } catch (error) {
+            console.error("Error al registrar usuario:", error);
+            throw error;
         }
-
-        // Create new user with default "cliente" role
-        const newUser = {
-            username,
-            email,
-            password,
-            role: "visitante", 
-        };
-
-        await api.post(`/users`, newUser);
     },
-
-    logOut: () => {
-        localStorage.removeItem("user");
-    },
-
-    // Check if user is logged in by verifying localStorage
-    isAuthenticated: () => {
+    isAuthenticated() {
         return !!localStorage.getItem("user");
     },
-
-    // Get current user data from localStorage
-    getUserLocal: () => {
-        const user = localStorage.getItem("user");
-        return user ? JSON.parse(user) : null;
+    getUserLocal() {
+        return JSON.parse(localStorage.getItem("user"));
+    },
+    logout() {
+        localStorage.removeItem("user");
     }
-}
+};

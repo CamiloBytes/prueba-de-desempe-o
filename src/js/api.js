@@ -1,68 +1,62 @@
-export const api = {
-    baseUrl:"http://localhost:3000/users",
+const BASE_URL = "http://localhost:3000"; // Cambia esto si tu servidor está en otro puerto o dominio
 
-    get: async (endpoint) => {
+export const api = {
+    async get(endpoint) {
         try {
-            const response = await fetch(`${api.baseUrl}${endpoint}`);
+            const response = await fetch(`${BASE_URL}${endpoint}`);
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             return await response.json();
         } catch (error) {
-            console.error('Error en la petición GET:', error);
+            console.error("Error en la petición GET:", error);
             throw error;
         }
     },
-    post:async (endpoint, data) => {
+    async post(endpoint, data) {
         try {
-            const response = await fetch(`${api.baseUrl}${endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
             });
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             return await response.json();
         } catch (error) {
-            console.error('Error en la petición POST:', error);
+            console.error("Error en la petición POST:", error);
             throw error;
         }
     },
-    // PATCH request handler for partial updates
-    patch: async (endpoint, data) => {
+    async put(endpoint, data) {
         try {
-            const response = await fetch(`${api.baseURL}${endpoint}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
             });
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             return await response.json();
         } catch (error) {
-            console.error('Error en la petición PATCH:', error);
+            console.error("Error en la petición PUT:", error);
             throw error;
         }
     },
-    // DELETE request handler
-    delete: async (endpoint) => {
+    async delete(endpoint) {
         try {
-            const response = await fetch(`${api.baseURL}${endpoint}`, {
-                method: 'DELETE'
+            const response = await fetch(`${BASE_URL}${endpoint}`, {
+                method: "DELETE",
             });
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
             return await response.json();
         } catch (error) {
-            console.error('Error en la petición DELETE:', error);
+            console.error("Error en la petición DELETE:", error);
             throw error;
         }
     }
-}
+};
