@@ -17,14 +17,11 @@
   ],
   "events": [
     {
-      "0": {
-        "id": "5fc5",
-        "name": "baile",
-        "description": "baile de graduacion",
-        "capacity": "10",
-        "date": "2025-07-17"
-      },
-      "id": "5fc5"
+      "id": "5fc5",
+      "name": "baile",
+      "description": "baile de graduacion",
+      "capacity": "10",
+      "date": "2025-07-17"
     }
   ],
   "registrations": [
