@@ -1,6 +1,7 @@
 import { api } from './api.js'
 import { authentication } from './auth.js'
 import { addEvent } from './addevent.js'
+import { alertInfo } from './alert.js'
 
 export async function renderDashboard() {
     const app = document.getElementById("app")
@@ -58,7 +59,19 @@ export async function renderDashboard() {
             button.addEventListener("click", async () => {
                 const eventId = button.dataset.id
                 try {
-                    await api.delete(`/events?=${eventId}`)
+                    if (!eventId) {
+                        alertInfo("ID de evento no proporcionado")
+                        return
+                    }
+                    const event = await api.get(`/events?=${eventId}`)
+                    if (!event) {
+                        alertInfo("Evento no encontrado")
+                        return
+                    }
+                    if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
+                        return 
+                    }
+                    await api.delete(`/events/${eventId}`)
                     console.log("Event deleted successfully!")
                     renderDashboard() // Refresh the dashboard
                 } catch (error) {
@@ -79,17 +92,39 @@ export async function renderDashboard() {
             button.addEventListener("click", async () => {
                 const eventId = button.dataset.id
                 try {
-                    const event = await api.get(`/events?=${eventId}`)
-                    if (event.capacity > 0 && event.capacity !== undefined) {
-                        event.capacity -= 1
-                        await api.put(`/events?=${eventId}`, event)
-                        console.log("Inscripción exitosa!")
-                        renderDashboard() // Refresh the dashboard
-                    } else {
-                        alert("Capacidad máxima alcanzada")
+                    // Fetch registrations and events again to get fresh data
+                    const registrations = await api.get("/registrations")
+                    const events = await api.get("/events")
+                    const user = authentication.getUserLocal()
+
+                    // Check if user already registered for this event
+                    const userRegistration = registrations.find(r => r.eventId === eventId && r.userId === user.id)
+                    if (userRegistration) {
+                        alertInfo("Ya estás inscrito en este evento")
+                        return
                     }
+                    // Count registrations for this event
+                    const eventRegistrations = registrations.filter(r => r.eventId === eventId)
+                    const event = events.find(e => e.id === eventId)
+                    if (!event) {
+                        alertError("Evento no encontrado")
+                        return
+                    }
+                    const capacity = parseInt(event.capacity, 10) || 0
+                    if (eventRegistrations.length >= capacity) {
+                        alertInfo("Capacidad máxima alcanzada")
+                        return
+                    }
+                    // Add registration
+                    await api.post("/registrations", { userId: user.id, eventId })
+                    // Decrement event capacity
+                    const updatedEvent = { ...event, capacity: (capacity - 1).toString() }
+                    await api.put(`/events/${eventId}`, updatedEvent)
+                    alertInfo("Inscripción exitosa")
+                    renderDashboard() // Refresh the dashboard
                 } catch (error) {
                     console.error("Error al inscribirse:", error)
+                    alertError("Error al inscribirse en el evento")
                 }
             })
         })
@@ -100,7 +135,7 @@ export async function renderDashboard() {
                 const capacity = parseInt(button.closest('tr').querySelector('td:nth-child(3)').textContent, 10) || 0
                 try {
                     if (capacity <= 0) {
-                        alert("No puedes salir de un evento sin inscribirte primero")
+                        alertError("No puedes salir de un evento sin inscribirte primero")
                         return
                     }
                     if (!eventId) {
@@ -114,7 +149,7 @@ export async function renderDashboard() {
                     }
                     const event = await api.get(`/events?=${eventId}`)
                     event.capacity += 1
-                    await api.put(`/events?=${eventId}`, event)
+                    await api.put(`/events/${eventId}`, event)
                     console.log("Saliste del evento exitosamente!")
                     renderDashboard() // Refresh the dashboard
                 } catch (error) {

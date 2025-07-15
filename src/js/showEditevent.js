@@ -1,14 +1,15 @@
-// editCourse.js
-import { alertInfo } from './alert.js'
+import { alertInfo, alertError } from './alert.js'
 import { api } from './api.js'
+import { authentication } from './auth.js'
+import { router } from './router.js'
 
-// Function to fetch course data
-async function fetchCourseData(eventId) {
+// Function to fetch event data
+async function fetchEventData(eventId) {
     try {
-        const response = await api.get(`/events?=${eventId}`)
-        return response
+        const event = await api.get(`/events/${eventId}`)
+        return event
     } catch (error) {
-        console.error('Error fetching course data:', error)
+        console.error('Error fetching event data:', error)
         throw error
     }
 }
@@ -17,29 +18,24 @@ async function fetchCourseData(eventId) {
 export async function showEditevent(eventId) {
     const app = document.getElementById("app")
 
-    const event = await fetch (`/events?=${eventId}`)
-    const eventData = await event.json()
-    if (!eventData || eventData.length === 0) {
-        alertInfo("Evento no encontrado")
-        return
-    }
-    if (eventData.length > 1) {
-        alertInfo("Se encontró más de un evento con el mismo ID. Por favor, verifica la base de datos.")
-        return
-    }
-    
-    if (!event) {
-        alertInfo("Evento no encontrado")
-        return; 
-    }
     if (!eventId) {
         alertInfo("ID de evento no proporcionado")
         return;
     }
-    if (!event.name || !event.description || !event.capacity || !event.date) {
+
+    let event
+    try {
+        event = await fetchEventData(eventId)
+    } catch {
+        alertInfo("Evento no encontrado")
+        return
+    }
+
+    if (!event || !event.name || !event.description || !event.capacity || !event.date) {
         alertInfo("Faltan datos del evento. Por favor, completa todos los campos.")
         return;
     }
+
     app.innerHTML = `
         <section class="edit-event">
             <h2>Editar Evento</h2>
@@ -64,8 +60,8 @@ export async function showEditevent(eventId) {
             </form>
         </section>`
         
-    document.getElementById("edit-event-form").onsubmit = async event => {
-        event.preventDefault();
+    document.getElementById("edit-event-form").onsubmit = async e => {
+        e.preventDefault();
         const updatedEvent = {
             name: document.getElementById("event-name").value,
             description: document.getElementById("event-description").value,
@@ -74,25 +70,28 @@ export async function showEditevent(eventId) {
         };
         
         try {
-            await api.put(`/events?=${eventId}`, updatedEvent);
-            console.log("Evento actualizado exitosamente!");
+            await api.put(`/events/${eventId}`, updatedEvent);
+            alertInfo("Evento actualizado exitosamente!");
             location.hash = "#/dashboard"; // Redirect to dashboard after update
         } catch (error) {
             console.error("Error al actualizar el evento:", error);
+            alertError("Error al actualizar el evento");
         }
     }
+
     document.getElementById("logout-btn").addEventListener("click", () => {
         authentication.logout();
         location.hash = "#/login";
     });
-    document.getElementById("add-event-btn").addEventListener("click", () =>
-        location.hash = "#/dashboard/events/create"
-    );
+
+    document.getElementById("add-event-btn").addEventListener("click", () => {
+        location.hash = "#/dashboard/events/create";
+    });
+
     document.getElementById("go-to-login").addEventListener("click", () => {
         location.hash = "#/login";
         console.log("Login successful");
         router();
-    }
-    );
+    });
 }
 

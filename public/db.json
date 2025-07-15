@@ -17,18 +17,21 @@
   ],
   "events": [
     {
-      "id": "4b3c",
-      "name": "baile",
-      "description": "el baile de la hija de trum",
-      "capacity": 16,
-      "date": "2025-07-17"
-    },
+      "0": {
+        "id": "5fc5",
+        "name": "baile",
+        "description": "baile de graduacion",
+        "capacity": "10",
+        "date": "2025-07-17"
+      },
+      "id": "5fc5"
+    }
+  ],
+  "registrations": [
     {
-      "id": "c05f",
-      "name": "cena de politicos",
-      "description": "cena de los 100 años de coca cola",
-      "capacity": "100",
-      "date": "2025-07-23"
+      "id": "7a10",
+      "userId": "bf7a",
+      "eventId": "5fc5"
     }
   ]
 }

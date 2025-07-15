@@ -32,24 +32,36 @@ export function renderLanding() {
             <button id="go-to-register">Registrarse</button>
         </nav>
     </section>`
-    document.getElementById("go-to-login").addEventListener("click", () => {
-        location.hash = "#/login"
-        console.log("Login successful")
-        router();   
-    })
-    document.getElementById("go-to-register").addEventListener("click", () => {
-        location.hash = "#/register"
-        console.log("Register successful")
-        router();
-    })
+    const loginBtn = document.getElementById("go-to-login")
+    if (loginBtn) {
+        loginBtn.addEventListener("click", () => {
+            location.hash = "#/login"
+            console.log("Login successful")
+            router();   
+        })
+    }
+    const registerBtn = document.getElementById("go-to-register")
+    if (registerBtn) {
+        registerBtn.addEventListener("click", () => {
+            location.hash = "#/register"
+            console.log("Register successful")
+            router();
+        })
+    }
 
-    document.getElementById("cta-login").addEventListener("click", () => {
-        location.hash = "#/login";
-    })
+    const ctaLogin = document.getElementById("cta-login")
+    if (ctaLogin) {
+        ctaLogin.addEventListener("click", () => {
+            location.hash = "#/login";
+        })
+    }
 
-    document.getElementById("cta-register").addEventListener("click", () => {
-        location.hash = "#/register";
-    })
+    const ctaRegister = document.getElementById("cta-register")
+    if (ctaRegister) {
+        ctaRegister.addEventListener("click", () => {
+            location.hash = "#/register";
+        })
+    }
 }
     
 
@@ -82,7 +94,7 @@ export function renderLogin() {
             console.log("Inicio de sesión exitoso:", user);
             location.hash = "#/dashboard"; // Redirige al dashboard
         } catch (error) {
-            alert("Error: Credenciales inválidas");
+            alertError("Error: Credenciales inválidas");
         }
     };
 }
@@ -144,5 +156,3 @@ export function renderRegister() {
         }
     };
 }
-
-

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000"; // Cambia esto si tu servidor está en otro puerto o dominio
+const BASE_URL = "http://localhost:3000"; 
 
 export const api = {
     async get(endpoint) {

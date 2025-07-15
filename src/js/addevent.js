@@ -44,30 +44,10 @@ export async function addEvent() {
         try {
             await api.post("/events", newEvent); 
             console.log("Evento agregado exitosamente!");
-            location.hash = "#/dashboard"; 
+            location.hash = "#/dashboard"; ///
         } catch (error) {
             console.error("Error al agregar el evento:", error);
         }
     }
-    document.getElementById("logout-btn").addEventListener("click", () => {
-        authentication.logoutUser();
-        location.hash = "#/login";
-    }
-    );
-    document.getElementById("add-event-btn").addEventListener("click", () => {
-        location.hash = "#/dashboard/events/create";
-    }
-    );
-    document.getElementById("go-to-login").addEventListener("click", () => {
-        location.hash = "#/login";
-        console.log("Login successful");
-        router();
-    }
-    );
-    document.getElementById("go-to-register").addEventListener("click", () => {
-        location.hash = "#/register";
-        console.log("Register successful");
-        router();
-    }
-    );
 }
+
