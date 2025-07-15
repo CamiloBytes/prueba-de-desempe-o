@@ -1,12 +1,14 @@
 import { renderLanding, renderLogin, renderRegister } from './views.js'
 import { renderDashboard } from './renderDashboard.js'
 import { showEditevent } from './showEditevent.js'
+import { addEvent } from './addevent.js'
 
 const routes = {
     "/": renderLanding,
     "/login": renderLogin,
     "/register": renderRegister,
     "/dashboard": renderDashboard,
+    "/dashboard/events/create": addEvent,
     "/dashboard/events/edit/:id": showEditevent,
     // other routes...
 };

@@ -1,7 +1,7 @@
 import { api } from './api.js'
 import { authentication } from './auth.js'
 import { addEvent } from './addevent.js'
-import { alertInfo } from './alert.js'
+import { alertInfo, alertError } from './alert.js'
 
 export async function renderDashboard() {
     const app = document.getElementById("app")
@@ -63,7 +63,7 @@ export async function renderDashboard() {
                         alertInfo("ID de evento no proporcionado")
                         return
                     }
-                    const event = await api.get(`/events?=${eventId}`)
+                    const event = await api.get(`/events/${eventId}`)
                     if (!event) {
                         alertInfo("Evento no encontrado")
                         return
@@ -82,7 +82,6 @@ export async function renderDashboard() {
 
         document.getElementById("add-event-btn").addEventListener("click", () => {
             location.hash = "#/dashboard/events/create"
-            addEvent()
         })
     }
 
@@ -147,7 +146,7 @@ export async function renderDashboard() {
                         console.error("Invalid capacity value:", capacity)
                         return
                     }
-                    const event = await api.get(`/events?=${eventId}`)
+                    const event = await api.get(`/events/${eventId}`)
                     event.capacity += 1
                     await api.put(`/events/${eventId}`, event)
                     console.log("Saliste del evento exitosamente!")

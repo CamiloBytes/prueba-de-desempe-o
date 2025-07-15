@@ -1,5 +1,5 @@
-import { api } from "./api";
-import { authentication } from "./auth";
+import { api } from "./api.js";
+import { authentication } from "./auth.js";
 
 export async function addEvent() {
     const app = document.getElementById("app");
