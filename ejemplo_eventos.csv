@@ -1,0 +1,9 @@
+nombre,descripcion,fecha,hora,ubicacion,capacidad,precio,categoria
+Conferencia de Tecnología 2024,Una conferencia sobre las últimas tendencias en tecnología,2024-06-15,09:00,Centro de Convenciones Ciudad,200,25.50,Tecnología
+Workshop de JavaScript,Taller práctico de desarrollo con JavaScript moderno,2024-06-20,14:00,Aula Magna Universidad,50,15.00,Educación
+Concierto de Rock,Noche de rock con bandas locales,2024-07-05,20:00,Teatro Principal,300,35.00,Música
+Feria de Emprendimiento,Espacio para emprendedores y startups,2024-07-12,10:00,Parque de Innovación,150,0.00,Negocios
+Curso de Cocina Italiana,Aprende a cocinar auténtica comida italiana,2024-06-25,16:00,Escuela Culinaria Central,25,45.00,Gastronomía
+Maratón Ciudad Verde,Carrera benéfica por el medio ambiente,2024-08-10,07:00,Parque Central,500,12.00,Deportes
+Exposición de Arte Moderno,Muestra de artistas contemporáneos locales,2024-06-30,18:00,Galería Municipal,80,8.00,Arte
+Seminario de Marketing Digital,Estrategias avanzadas de marketing online,2024-07-18,09:30,Hotel Business Center,100,50.00,Negocios

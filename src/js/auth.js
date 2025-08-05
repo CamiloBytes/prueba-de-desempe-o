@@ -1,37 +1,104 @@
 import { api } from './api.js';
-// Authentication module to handle user login, registration, and session management
 
 export const authentication = {
     async loginUser(email, password) {
         try {
-            const response = await api.get(`/users?email=${email}&password=${password}`);
-            if (response.length === 0) {
-                throw new Error("Credenciales inválidas");
+            const response = await api.post('/auth/login', { email, password }, false);
+            
+            if (response.success) {
+                // Store user data with token
+                const userData = {
+                    ...response.user,
+                    token: response.token
+                };
+                localStorage.setItem("user", JSON.stringify(userData));
+                return userData;
+            } else {
+                throw new Error(response.message || "Error en el login");
             }
-            const user = response[0];
-            localStorage.setItem("user", JSON.stringify(user)); // Guarda la sesión
-            return user;
         } catch (error) {
             console.error("Error al iniciar sesión:", error);
             throw error;
         }
     },
+
     async registerUser(name, email, password) {
         try {
-            const user = { name, email, password, role: "visitor" }; // Ajusta el rol según sea necesario
-            return await api.post("/users", user); // Asegúrate de que "/users" exista en db.json
+            const response = await api.post("/auth/register", { name, email, password }, false);
+            
+            if (response.success) {
+                // Store user data with token
+                const userData = {
+                    ...response.user,
+                    token: response.token
+                };
+                localStorage.setItem("user", JSON.stringify(userData));
+                return userData;
+            } else {
+                throw new Error(response.message || "Error en el registro");
+            }
         } catch (error) {
             console.error("Error al registrar usuario:", error);
             throw error;
         }
     },
+
+    async getCurrentUser() {
+        try {
+            const response = await api.get('/auth/profile');
+            if (response.success) {
+                // Update stored user data but keep the token
+                const currentUser = this.getUserLocal();
+                const updatedUser = {
+                    ...response.user,
+                    token: currentUser.token
+                };
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+                return updatedUser;
+            }
+            return null;
+        } catch (error) {
+            console.error("Error al obtener perfil:", error);
+            // If token is invalid, logout user
+            this.logout();
+            return null;
+        }
+    },
+
     isAuthenticated() {
-        return !!localStorage.getItem("user");
+        const user = this.getUserLocal();
+        return !!(user && user.token);
     },
+
     getUserLocal() {
-        return JSON.parse(localStorage.getItem("user"));
+        try {
+            const userData = localStorage.getItem("user");
+            return userData ? JSON.parse(userData) : null;
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            return null;
+        }
     },
-    logout() {
-        localStorage.removeItem("user");
+
+    isAdmin() {
+        const user = this.getUserLocal();
+        return user && user.role === 'admin';
+    },
+
+    isUser() {
+        const user = this.getUserLocal();
+        return user && (user.role === 'user' || user.role === 'admin');
+    },
+
+    async logout() {
+        try {
+            // Call logout endpoint to potentially invalidate token on server
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error("Error en logout:", error);
+        } finally {
+            // Always clear local storage
+            localStorage.removeItem("user");
+        }
     }
 };
